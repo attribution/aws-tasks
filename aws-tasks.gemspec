@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
     "README.rdoc",
     "Rakefile",
     "VERSION",
+    "aws-tasks.gemspec",
     "lib/aws-tasks.rb",
     "lib/tasks/aws.rake",
     "test/helper.rb",
