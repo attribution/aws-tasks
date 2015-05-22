@@ -1,3 +1,5 @@
+require 'aws-sdk'
+
 namespace :aws do
 
   namespace :rds do
