@@ -8,10 +8,14 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.3.8)
-    aws (2.10.2)
-      http_connection
-      uuidtools
-      xml-simple
+    aws-sdk (2.0.45)
+      aws-sdk-resources (= 2.0.45)
+    aws-sdk-core (2.0.45)
+      builder (~> 3.0)
+      jmespath (~> 1.0)
+      multi_json (~> 1.0)
+    aws-sdk-resources (2.0.45)
+      aws-sdk-core (= 2.0.45)
     builder (3.2.2)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
@@ -29,7 +33,6 @@ GEM
       oauth2
     hashie (3.4.1)
     highline (1.7.2)
-    http_connection (1.4.4)
     i18n (0.7.0)
     jeweler (2.0.1)
       builder
@@ -40,6 +43,8 @@ GEM
       nokogiri (>= 1.5.10)
       rake
       rdoc
+    jmespath (1.0.2)
+      multi_json (~> 1.0)
     json (1.8.2)
     jwt (1.5.0)
     mini_portile (0.6.2)
@@ -73,14 +78,12 @@ GEM
     thread_safe (0.3.5)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
-    uuidtools (2.1.5)
-    xml-simple (1.1.5)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  aws (~> 2)
+  aws-sdk (~> 2)
   bundler (~> 1.0)
   jeweler (~> 2.0.1)
   rdoc (~> 3.12)
