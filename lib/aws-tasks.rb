@@ -1,2 +1,2 @@
 require 'rubygems'
-require 'aws-sdk'
+require 'aws'
