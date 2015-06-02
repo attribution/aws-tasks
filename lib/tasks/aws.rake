@@ -66,7 +66,7 @@ namespace :aws do
     end
 
     desc "Destroy a Redshift instance"
-    task :destroy, [:id, :key, :region, :instance] do |cmd, args|
+    task :destroy, [:id, :key, :region, :identifier] do |cmd, args|
       credentials = Aws::Credentials.new(args[:id], args[:key])
       client = Aws::Redshift::Client.new(region: args[:region], credentials: credentials)
       client.delete_cluster(cluster_identifier: args[:identifier], skip_final_cluster_snapshot: true)
