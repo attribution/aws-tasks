@@ -29,6 +29,13 @@ namespace :aws do
       end
     end
 
+    desc "Destroy an RDS instance"
+    task :destroy, [:id, :key, :region, :identifier] do |cmd, args|
+      credentials = Aws::Credentials.new(args[:id], args[:key])
+      client = Aws::RDS::Client.new(region: args[:region], credentials: credentials)
+      client.delete_db_instance(db_instance_identifier: args[:identifier], skip_final_snapshot: true)
+    end
+
   end
 
   namespace :redshift do
@@ -56,6 +63,13 @@ namespace :aws do
       else
         puts "Instance #{args[:new_db]} already exists"
       end
+    end
+
+    desc "Destroy a Redshift instance"
+    task :destroy, [:id, :key, :region, :instance] do |cmd, args|
+      credentials = Aws::Credentials.new(args[:id], args[:key])
+      client = Aws::Redshift::Client.new(region: args[:region], credentials: credentials)
+      client.delete_cluster(cluster_identifier: args[:identifier], skip_final_cluster_snapshot: true)
     end
 
   end
