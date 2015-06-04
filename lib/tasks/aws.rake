@@ -41,7 +41,7 @@ namespace :aws do
   namespace :redshift do
 
     desc "Launch a Redshift instance"
-    task :launch, [:id, :key, :snapshot, :new_db, :region] do |cmd, args|
+    task :launch, [:id, :key, :snapshot, :new_db, :region, :security_group_id] do |cmd, args|
       credentials = Aws::Credentials.new(args[:id], args[:key])
       client = Aws::Redshift::Client.new(region: args[:region], credentials: credentials)
 
@@ -58,7 +58,8 @@ namespace :aws do
 
         dump_instance = client.restore_from_cluster_snapshot(
           cluster_identifier: args[:new_db],
-          snapshot_identifier: latest_snapshot.snapshot_identifier
+          snapshot_identifier: latest_snapshot.snapshot_identifier,
+          vpc_security_group_ids: [args[:security_group_id]]
         )
       else
         puts "Instance #{args[:new_db]} already exists"
