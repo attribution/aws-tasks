@@ -1,2 +1,3 @@
 require 'rubygems'
-require 'aws-sdk'
+require 'aws-sdk-rds'
+require 'aws-sdk-redshift'
