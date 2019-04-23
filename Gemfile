@@ -1,9 +1,11 @@
 source "http://rubygems.org"
-gem 'aws-sdk', '~> 2'
+gem 'aws-sdk-rds', '~> 1'
+gem 'aws-sdk-redshift', '~> 1'
+
 group :development do
   gem "shoulda", ">= 0"
-  gem "rdoc", "~> 3.12"
-  gem "bundler", "~> 1.0"
-  gem "jeweler", "~> 2.0.1"
+  gem "rdoc", "~> 3"
+  gem "bundler", "~> 1"
+  gem "jeweler", "~> 2"
   gem "simplecov", ">= 0"
 end
