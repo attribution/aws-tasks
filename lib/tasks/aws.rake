@@ -18,6 +18,7 @@ namespace :aws do
         puts "Launching Database with identifier #{args[:new_db]}"
         latest_snapshot = client.describe_db_snapshots.db_snapshots.
           select { |snap| snap.db_instance_identifier == args[:snapshot] }.
+          select { |snap| snap.status == 'available' }.
           sort { |s1,s2| s1.snapshot_create_time <=> s2.snapshot_create_time }.
           last
 
