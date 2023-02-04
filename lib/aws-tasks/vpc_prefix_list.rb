@@ -29,6 +29,7 @@ module AwsTasks
     #     --add-entries Cidr=1.1.1.2/32,Description=test
 
     def self.get_my_ip
+      require 'open-uri'
       URI.open(IP_LOOKUP_URL).read
     end
 
@@ -96,7 +97,7 @@ module AwsTasks
         }]
       }
 
-      if remove_entry_cidr.present?
+      if remove_entry_cidr
         params[:remove_entries] = [{ cidr: remove_entry_cidr }]
       end
 
