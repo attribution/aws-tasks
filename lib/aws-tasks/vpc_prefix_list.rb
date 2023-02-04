@@ -36,10 +36,10 @@ module AwsTasks
     #  add_my_ip { Faraday.get(Services::AwsVpcPrefixList::IP_LOOKUP_URL).body }
     #  add_my_ip('1.1.1.1')
     #  add_my_ip
-    def self.add_my_ip(ip=nil)
+    def self.add_my_ip(ip=nil, prefix_list_id: nil)
       ip ||= yield if block_given?
       ip ||= get_my_ip
-      new.add_entry(ip)
+      new(prefix_list_id: prefix_list_id).add_entry(ip)
     end
 
     def initialize(prefix_list_id: nil, client: nil)
@@ -102,7 +102,7 @@ module AwsTasks
 
       @client.
         modify_managed_prefix_list(params).
-        tap { puts "#{ip} added" + (remove_entry_cidr ? ", removed #{remove_entry_cidr}" : '') }
+        tap { puts "AwsTasks::VpcPrefixList #{ip} added to #{@prefix_list_id}" + (remove_entry_cidr ? ", removed #{remove_entry_cidr}" : '') }
     rescue *RETRYABLE_ERRORS => error
       raise if max_retries < 1
       max_retries -= 1
