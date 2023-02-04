@@ -44,10 +44,10 @@ module AwsTasks
 
     def initialize(prefix_list_id: nil, client: nil)
       if ENV['AWS_VPC_COMBO']
-        access_key_id, secret_access_key, region, prefix_list_id = ENV['AWS_VPC_COMBO'].split(':')
+        access_key_id, secret_access_key, region, combo_prefix_list_id = ENV['AWS_VPC_COMBO'].split(':')
       end
 
-      @prefix_list_id = prefix_list_id || ENV['AWS_VPC_PREFIX_LIST_ID']
+      @prefix_list_id = prefix_list_id || combo_prefix_list_id || ENV['AWS_VPC_PREFIX_LIST_ID']
       @client = client || init_client(
         access_key_id     || ENV['AWS_VPC_ACCESS_KEY_ID'],
         secret_access_key || ENV['AWS_VPC_SECRET_ACCESS_KEY'],
