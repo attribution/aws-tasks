@@ -14,14 +14,18 @@ namespace :aws do
       if !dump_instance
         puts "Launching Database with identifier #{args[:new_db]}"
         latest_snapshot = client.describe_cluster_snapshots.snapshots.
-          select { |snap| snap.cluster_identifier == args[:snapshot] }.
+          select do |snap|
+            # allow to pass cluster_identifier or snapshot_identifier for search or latest dump
+            (snap.cluster_identifier  == args[:snapshot]) ||
+            (snap.snapshot_identifier == args[:snapshot])
+          end.
           sort { |s1,s2| s1.snapshot_create_time <=> s2.snapshot_create_time }.
           last
 
         dump_instance = client.restore_from_cluster_snapshot(
           cluster_identifier: args[:new_db],
           snapshot_identifier: latest_snapshot.snapshot_identifier,
-          vpc_security_group_ids: [args[:security_group_id]]
+          vpc_security_group_ids: Array.wrap(args[:security_group_id])
         )
       else
         puts "Instance #{args[:new_db]} already exists"
