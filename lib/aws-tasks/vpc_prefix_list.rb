@@ -12,6 +12,7 @@ module AwsTasks
 
     RETRYABLE_ERRORS = [
       Aws::EC2::Errors::IncorrectState,
+      Aws::EC2::Errors::InvalidPrefixListModification,
       Aws::EC2::Errors::PrefixListVersionMismatch,
       Aws::EC2::Errors::PrefixListMaxEntriesExceeded
     ]
@@ -106,14 +107,18 @@ module AwsTasks
         tap { puts "AwsTasks::VpcPrefixList #{ip} added to #{@prefix_list_id}" + (remove_entry_cidr ? ", removed #{remove_entry_cidr}" : '') }
     rescue *RETRYABLE_ERRORS => error
       raise if max_retries < 1
+
+      sleep rand(2.0...10.0) / max_retries
       max_retries -= 1
 
       # puts "Error #{error}, retrying..."
-      if error.kind_of?(Aws::EC2::Errors::PrefixListMaxEntriesExceeded)
+      if
+        error.kind_of?(Aws::EC2::Errors::PrefixListMaxEntriesExceeded) ||
+        error.kind_of?(Aws::EC2::Errors::InvalidPrefixListModification)
+      then
         remove_entry_cidr = get_prefix_list_entries.first.cidr
       end
 
-      sleep rand(0.0...2.0)
       retry
     end
   end
