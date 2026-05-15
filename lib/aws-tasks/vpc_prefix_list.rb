@@ -44,6 +44,16 @@ module AwsTasks
       new(prefix_list_id: prefix_list_id).add_entry(ip)
     end
 
+    # Usage:
+    #  remove_my_ip { Faraday.get(Services::AwsVpcPrefixList::IP_LOOKUP_URL).body }
+    #  remove_my_ip('1.1.1.1')
+    #  remove_my_ip
+    def self.remove_my_ip(ip=nil, prefix_list_id: nil)
+      ip ||= yield if block_given?
+      ip ||= get_my_ip
+      new(prefix_list_id: prefix_list_id).remove_entry(ip)
+    end
+
     def initialize(prefix_list_id: nil, client: nil)
       if ENV['AWS_VPC_COMBO']
         access_key_id, secret_access_key, region, combo_prefix_list_id = ENV['AWS_VPC_COMBO'].split(':')
@@ -120,6 +130,28 @@ module AwsTasks
       end
 
       retry
+    end
+
+    # https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/EC2/Client.html#modify_managed_prefix_list-instance_method
+    def remove_entry(ip, version: nil)
+      cidr = "#{ip}/32"
+
+      unless get_prefix_list_entries.any? { _1.cidr == cidr }
+        puts "AwsTasks::VpcPrefixList #{ip} not found in #{@prefix_list_id}, nothing to remove"
+        return
+      end
+
+      prefix_list = get_prefix_list
+
+      params = {
+        prefix_list_id: @prefix_list_id,
+        current_version: (version || prefix_list.version),
+        remove_entries: [{ cidr: cidr }]
+      }
+
+      @client.
+        modify_managed_prefix_list(params).
+        tap { puts "AwsTasks::VpcPrefixList #{ip} removed from #{@prefix_list_id}" }
     end
   end
 end
