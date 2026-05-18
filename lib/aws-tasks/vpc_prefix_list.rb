@@ -133,7 +133,7 @@ module AwsTasks
     end
 
     # https://docs.aws.amazon.com/sdk-for-ruby/v3/api/Aws/EC2/Client.html#modify_managed_prefix_list-instance_method
-    def remove_entry(ip, version: nil)
+    def remove_entry(ip, version: nil, max_retries: 5)
       cidr = "#{ip}/32"
 
       unless get_prefix_list_entries.any? { _1.cidr == cidr }
@@ -152,6 +152,13 @@ module AwsTasks
       @client.
         modify_managed_prefix_list(params).
         tap { puts "AwsTasks::VpcPrefixList #{ip} removed from #{@prefix_list_id}" }
+    rescue *RETRYABLE_ERRORS => error
+      raise if max_retries < 1
+
+      sleep rand(2.0...10.0) / max_retries
+      max_retries -= 1
+
+      retry
     end
   end
 end
